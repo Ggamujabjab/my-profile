@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김경식 - 프론트엔드 개발자</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #fafafa;
+            color: #1a1a1a;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 100%);
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .card-hover {
+            transition: all 0.35s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+
+        .skill-icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.06);
+            min-width: 80px;
+            cursor: default;
+            transition: all 0.25s ease;
+        }
+
+        .skill-icon-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.95);
+        }
+
+        .skill-icon-item img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .skill-icon-item span {
+            font-size: 11px;
+            font-weight: 600;
+            color: #374151;
+            letter-spacing: 0.02em;
+            text-align: center;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e5e5e5;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            color: #666;
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: #1a1a1a;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #1a1a1a;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .profile-avatar {
+            width: 400px;
+            height: 400px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            position: relative;
+            display: inline-block;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: #1a1a1a;
+            border-radius: 1px;
+        }
+
+        .project-card {
+            border-radius: 16px;
+            padding: 36px;
+            border: 1px solid;
+            transition: all 0.35s ease;
+        }
+
+        .contact-btn {
+            background: #1a1a1a;
+            color: white;
+            padding: 14px 40px;
+            border-radius: 8px;
+            border: 1px solid #1a1a1a;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            letter-spacing: 0.4px;
+        }
+
+        .contact-btn:hover {
+            background: #333;
+            border-color: #333;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+        }
+
+        .contact-btn:active {
+            transform: translateY(0);
+        }
+
+        .contact-btn.secondary {
+            background: transparent;
+            color: #1a1a1a;
+        }
+
+        .contact-btn.secondary:hover {
+            background: #f5f5f5;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .business-card {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+            border-radius: 20px;
+            padding: 40px 48px;
+            border: 1px solid rgba(99,102,241,0.3);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+            position: relative;
+            overflow: hidden;
+            max-width: 560px;
+            width: 100%;
+            margin: 0 auto 40px;
+        }
+
+        .business-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, transparent 35%, rgba(99,102,241,0.12) 50%, transparent 65%);
+            pointer-events: none;
+        }
+
+        .business-card-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .business-card-left p:first-child {
+            font-size: 22px;
+            font-weight: 700;
+            color: #F8FAFC;
+            letter-spacing: -0.3px;
+            margin: 0 0 4px 0;
+        }
+
+        .business-card-left p:nth-child(2) {
+            font-size: 13px;
+            font-weight: 500;
+            color: #818CF8;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin: 0 0 16px 0;
+        }
+
+        .business-card-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 16px 0;
+        }
+
+        .business-card-email {
+            font-size: 10px;
+            color: #64748B;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin: 0 0 4px 0;
+        }
+
+        .business-card-email-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #E2E8F0;
+            margin: 0;
+        }
+
+        .business-card-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1E293B;
+            border: 2px solid #6366F1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #818CF8;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold text-black tracking-tight">
+                    KIM KYUNG-SIK
+                </div>
+                <div class="hidden md:flex gap-8">
+                    <a href="#about" class="nav-link text-gray-700 font-medium">소개</a>
+                    <a href="#skills" class="nav-link text-gray-700 font-medium">기술</a>
+                    <a href="#projects" class="nav-link text-gray-700 font-medium">포트폴리오</a>
+                    <a href="#contact" class="nav-link text-gray-700 font-medium">연락처</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient py-20 md:py-32">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="flex-1 fade-in">
+                    <h1 class="text-5xl md:text-6xl font-bold text-black mb-8 leading-tight">
+                        김경식
+                    </h1>
+                    <p class="text-gray-900 text-lg leading-relaxed mb-8">
+                        퍼블리셔로 10년간의 경험을 바탕으로 프론트엔드 개발을 3년간 실무에서 진행했습니다.
+                        현재는 중소기업에서 다양한 프로젝트를 담당하고 있습니다.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#contact" class="contact-btn">연락하기</a>
+                        <button class="contact-btn secondary border-2 border-gray-900">포트폴리오 보기</button>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col items-center gap-4">
+                    <svg class="profile-avatar" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#EEF2FF;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#E0E7FF;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="200" cy="200" r="190" fill="url(#bgGradient)"/>
+
+                        <!-- Head -->
+                        <ellipse cx="200" cy="120" rx="42" ry="46" fill="#FDDCB5"/>
+
+                        <!-- Neck -->
+                        <rect x="182" y="158" width="36" height="22" fill="#FDDCB5"/>
+
+                        <!-- Shirt -->
+                        <path d="M 140 185 Q 140 175 200 175 Q 260 175 260 185 L 260 270 Q 260 280 250 280 L 150 280 Q 140 280 140 270 Z" fill="#1E293B"/>
+
+                        <!-- Left arm -->
+                        <path d="M 140 195 Q 100 200 90 240" stroke="#1E293B" stroke-width="20" fill="none" stroke-linecap="round"/>
+
+                        <!-- Right arm -->
+                        <path d="M 260 195 Q 300 200 310 240" stroke="#1E293B" stroke-width="20" fill="none" stroke-linecap="round"/>
+
+                        <!-- Laptop base -->
+                        <rect x="120" y="285" width="160" height="12" rx="4" fill="#CBD5E1"/>
+
+                        <!-- Laptop screen -->
+                        <rect x="125" y="255" width="150" height="30" rx="3" fill="#0F172A"/>
+                        <rect x="132" y="262" width="136" height="18" rx="2" fill="#6366F1" opacity="0.7"/>
+
+                        <!-- Glow effect -->
+                        <circle cx="200" cy="265" r="8" fill="#6366F1" opacity="0.4" filter="url(#glow)"/>
+                        <circle cx="200" cy="265" r="5" fill="#6366F1" opacity="0.6"/>
+
+                        <defs>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            </filter>
+                        </defs>
+
+                        <!-- Sparkles -->
+                        <g fill="#6366F1" opacity="0.5">
+                            <polygon points="280,100 285,105 280,110 275,105"/>
+                            <polygon points="320,150 322,155 320,160 318,155"/>
+                            <polygon points="90,130 93,135 90,140 87,135"/>
+                        </g>
+                    </svg>
+                    <p class="text-base font-medium tracking-widest uppercase" style="color:#6366F1; letter-spacing:0.15em;">
+                        Frontend Developer
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 md:py-28">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title mb-16">소개</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover rounded-xl p-8 border" style="background:#FFF7ED; border-color:#FED7AA;">
+                    <div class="w-14 h-14 mb-6 flex items-center justify-center rounded-lg" style="background:#FED7AA;">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 10h3v8H8zm5-2h2v10h-2zm5 2h3v8h-3z" fill="#1E293B"/>
+                            <path d="M4 2h20a2 2 0 012 2v20a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="#1E293B" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">퍼블리셔</h3>
+                    <p class="text-gray-800 text-sm leading-relaxed">10년간의 깊이 있는 경험으로 마크업과 레이아웃에 탁월한 실력을 보유하고 있습니다.</p>
+                </div>
+                <div class="card-hover rounded-xl p-8 border" style="background:#F0FDF4; border-color:#BBF7D0;">
+                    <div class="w-14 h-14 mb-6 flex items-center justify-center rounded-lg" style="background:#86EFAC;">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 12l5 5 9-11" stroke="#1E293B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 2h20a2 2 0 012 2v20a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="#1E293B" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">개발</h3>
+                    <p class="text-gray-800 text-sm leading-relaxed">3년간의 실무 경험을 통해 다양한 웹 애플리케이션 개발에 참여했습니다.</p>
+                </div>
+                <div class="card-hover rounded-xl p-8 border" style="background:#EFF6FF; border-color:#BFDBFE;">
+                    <div class="w-14 h-14 mb-6 flex items-center justify-center rounded-lg" style="background:#93C5FD;">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 10l3 3 8-8M8 18l3 3 8-8" stroke="#1E293B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 2h20a2 2 0 012 2v20a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2z" fill="none" stroke="#1E293B" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">설계</h3>
+                    <p class="text-gray-800 text-sm leading-relaxed">사용자 중심의 UX/UI를 고려하며 효율적인 솔루션을 제공합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 md:py-28 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title mb-16">기술 스택</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="card-hover rounded-xl p-8 border" style="background:#F5F3FF; border-color:#DDD6FE;">
+                    <h3 class="text-lg font-bold text-black mb-8">마크업 & 스타일</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" alt="HTML5">
+                            <span>HTML5</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" alt="CSS3">
+                            <span>CSS3</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sass/sass-original.svg" alt="SCSS">
+                            <span>SCSS</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" alt="Bootstrap">
+                            <span>Bootstrap</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind">
+                            <span>Tailwind</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-hover rounded-xl p-8 border" style="background:#FDF4FF; border-color:#F0ABFC;">
+                    <h3 class="text-lg font-bold text-black mb-8">프로그래밍</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" alt="JavaScript">
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React">
+                            <span>React</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg" alt="Vue">
+                            <span>Vue</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="TypeScript">
+                            <span>TypeScript</span>
+                        </div>
+                        <div class="skill-icon-item">
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" alt="Git">
+                            <span>Git</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 md:py-28">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="section-title mb-16">포트폴리오</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card-hover project-card" style="background:#F0F9FF; border-color:#BAE6FD;">
+                    <div class="w-14 h-14 mb-6 flex items-center justify-center rounded-lg" style="background:#BAE6FD;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 6h16a2 2 0 012 2v16a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="#1E293B" stroke-width="1.5" fill="none"/>
+                            <path d="M12 14l4-4 4 4m-4-4v8" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">현재카드</h3>
+                    <p class="text-gray-800 text-base mb-4">현대카드와의 협력 프로젝트로 참여하여 사용자 친화적인 인터페이스 개발을 담당했습니다.</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <span class="inline-block px-3 py-1 rounded-md text-xs font-medium" style="background:#BAE6FD; color:#0369A1;">React</span>
+                        <span class="inline-block px-3 py-1 rounded-md text-xs font-medium" style="background:#BAE6FD; color:#0369A1;">SCSS</span>
+                    </div>
+                </div>
+                <div class="card-hover project-card" style="background:#ECFDF5; border-color:#A7F3D0;">
+                    <div class="w-14 h-14 mb-6 flex items-center justify-center rounded-lg" style="background:#A7F3D0;">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 8h12a2 2 0 012 2v12a2 2 0 01-2 2H10a2 2 0 01-2-2V10a2 2 0 012-2z" stroke="#1E293B" stroke-width="1.5" fill="none"/>
+                            <path d="M14 16h4M16 14v4" stroke="#1E293B" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-black mb-3">보건복지부 포털</h3>
+                    <p class="text-gray-800 text-base mb-4">정부 공식 포털 사이트 개발에 참여하여 정확성과 접근성을 중시한 개발을 진행했습니다.</p>
+                    <div class="flex gap-2 flex-wrap">
+                        <span class="inline-block px-3 py-1 rounded-md text-xs font-medium" style="background:#A7F3D0; color:#047857;">Vue</span>
+                        <span class="inline-block px-3 py-1 rounded-md text-xs font-medium" style="background:#A7F3D0; color:#047857;">JavaScript</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 md:py-28 bg-white border-t border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-5xl font-bold text-black mb-4">함께 일해볼까요?</h2>
+            <p class="text-gray-700 text-xl mb-16">
+                새로운 프로젝트나 협력 기회에 항상 열려있습니다. 편하게 연락주세요.
+            </p>
+
+            <div class="business-card">
+                <div class="business-card-content">
+                    <div class="business-card-left">
+                        <p>김경식</p>
+                        <p>Frontend Developer</p>
+                        <hr class="business-card-divider">
+                        <p class="business-card-email">이메일</p>
+                        <p class="business-card-email-text">jk9804034@naver.com</p>
+                    </div>
+                    <div class="business-card-avatar">KK</div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 justify-center flex-wrap">
+                <button class="contact-btn" onclick="copyEmail()">이메일 복사</button>
+                <a href="mailto:jk9804034@naver.com" class="contact-btn">메일 보내기</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-500 text-sm font-light">© 2026 Kim Kyung-Sik. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Copy email function
+        function copyEmail() {
+            const email = 'jk9804034@naver.com';
+            navigator.clipboard.writeText(email).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '복사되었습니다!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && document.querySelector(href)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
